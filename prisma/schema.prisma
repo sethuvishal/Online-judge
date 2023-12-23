@@ -8,8 +8,55 @@ datasource db {
 }
 
 model User {
-  Username String @db.VarChar(255)
-  id       Int    @id @default(autoincrement())
-  email    String @db.VarChar(255)
-  password String @db.VarChar(255)
+  id         String       @id @default(uuid())
+  Username   String       @db.VarChar(255)
+  email      String       @db.VarChar(255)
+  password   String       @db.VarChar(255)
+  role       Role         @default(USER)
+  tokens     String[]
+  createdAt  DateTime
+  submission Submission[]
+}
+
+model Problem {
+  id               String       @id @default(uuid())
+  title            String
+  description      String
+  test_cases       String[]
+  templates        Json?
+  submission_count Int          @default(0)
+  accepted         Int          @default(0)
+  submission       Submission[]
+}
+
+model Submission {
+  id         String      @id @default(uuid())
+  code       String
+  result     JudgeStatus @default(PENDING)
+  language   Language
+  Problem    Problem     @relation(fields: [problemId], references: [id])
+  problemId  String
+  User       User        @relation(fields: [userId], references: [id])
+  userId     String
+  submitedAt DateTime
+}
+
+enum Language {
+  CPP
+  C
+  JAVASCRIPT
+  JAVA
+  PYTHON
+}
+
+enum JudgeStatus {
+  PENDING
+  ACCEPTED
+  FAILED
+  ERROR
+}
+
+enum Role {
+  USER
+  ADMIN
 }
