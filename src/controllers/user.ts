@@ -1,8 +1,17 @@
-import { Request, Response } from 'express';
-import { Prisma } from '@prisma/client';
-import db from '../services/prisma-client';
+import { NextFunction, Request, Response } from 'express';
+import User from '../services/user';
+import { createJwtToken } from '../utils/helper.util';
 
-export async function getAllUsers(req: Request, res: Response) {
-  const users = await db.user.findMany();
-  res.json(users);
+export async function signup(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { user, token } = await User.createUser(req.body);
+
+    req.session = {
+      JWT: token,
+    };
+
+    return res.status(200).json({ message: 'User Successfully Created', user });
+  } catch (err) {
+    next(err);
+  }
 }
