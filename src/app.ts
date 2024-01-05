@@ -3,6 +3,7 @@ import { errorHandler } from './middlewares/error-handler';
 import cookieSession from 'cookie-session';
 import dotenv from 'dotenv';
 import router from './routes/route';
+var cookieParser = require('cookie-parser');
 dotenv.config();
 
 const app: Application = express();
@@ -15,6 +16,7 @@ app.use(
     secure: true,
   })
 );
+app.use(cookieParser());
 
 app.use('/api', router);
 

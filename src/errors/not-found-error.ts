@@ -3,13 +3,13 @@ import { ErrorService } from './Error';
 export class NotFoundError extends ErrorService {
   statusCode = 404;
 
-  constructor() {
+  constructor(public message: string) {
     super('Route not found');
 
     Object.setPrototypeOf(this, NotFoundError.prototype);
   }
 
   errorMessages() {
-    return [{ message: 'Not Found' }];
+    return [{ message: this.message }];
   }
 }

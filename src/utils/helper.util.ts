@@ -1,10 +1,7 @@
 import jwt from 'jsonwebtoken';
+import { JwtPayload } from '../types/jwtPayload';
 
-type UserPayload = {
-  id: string;
-  role: string;
-};
-export function createJwtToken(payload: UserPayload, expiresIn = '30d') {
+export function createJwtToken(payload: JwtPayload, expiresIn = '30d') {
   const token = jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn });
   return token;
 }
