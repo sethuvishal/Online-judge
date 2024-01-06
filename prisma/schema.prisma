@@ -20,9 +20,11 @@ model User {
 
 model Problem {
   id               String       @id @default(uuid())
+  no               Int          @default(autoincrement())
   title            String
   description      String
-  test_cases       String[]
+  input_types      String[]
+  test_cases       Json[]
   templates        Json?
   submission_count Int          @default(0)
   accepted         Int          @default(0)

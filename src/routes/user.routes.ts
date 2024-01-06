@@ -1,11 +1,10 @@
-import express, { Request, Response } from 'express';
-import { getMe, signIn, signup } from '../controllers/user';
+import express from 'express';
+import { getMe, signIn, signup } from '../controllers/user.controller';
 import { body } from 'express-validator';
 import { validateRequest } from '../middlewares/validate-request';
 import authMiddleware from '../middlewares/auth';
 
 export const router = express.Router();
-// router.use('/users');
 
 router.post(
   '/signup',
