@@ -25,7 +25,7 @@ model Problem {
   description      String
   input_types      String[]
   test_cases       Json[]
-  templates        Json?
+  template         String?
   submission_count Int          @default(0)
   accepted         Int          @default(0)
   submission       Submission[]

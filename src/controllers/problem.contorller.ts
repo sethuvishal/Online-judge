@@ -1,5 +1,6 @@
 import { NextFunction, Response, Request } from 'express';
 import problemService from '../services/problem.service';
+import { check, validationResult } from 'express-validator';
 
 export async function getProblems(
   req: Request,
@@ -40,6 +41,44 @@ export async function createProblem(
     return res
       .status(201)
       .json({ message: 'Problem created successfully', problem });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+}
+
+export async function updateProblem(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const filteredData = {
+      title: req.body.title,
+      description: req.body.description,
+    };
+    const problem = await problemService.updateProblem(
+      filteredData,
+      req.params.id
+    );
+    return res
+      .status(200)
+      .json({ message: 'Problem updated successfully', problem });
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export async function deleteProblem(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    await problemService.deleteProblem(req.params.id);
+    return res
+      .status(200)
+      .json({ message: 'Problem deleted successfully', id: req.params.id });
   } catch (err) {
     console.log(err);
     next(err);
