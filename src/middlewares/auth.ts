@@ -1,8 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { NotAuthorizedError } from '../errors/not-authorized-error';
-import jwt from 'jsonwebtoken';
-import UserService from '../services/user';
-import { JwtPayload } from '../types/jwtPayload';
+import { isTokenExpired, validUser, verifyJwt } from '../utils/auth.utils';
 
 export default async function authMiddleware(
   req: Request,
@@ -12,21 +10,26 @@ export default async function authMiddleware(
   try {
     const token = req.cookies.Online_Judge;
     if (!token) throw new NotAuthorizedError('Forbidden resource');
+    const payload = verifyJwt(token, process.env.JWT_SECRET!);
+    isTokenExpired(payload);
+    validUser(payload, token);
+    req.user = payload;
+    next();
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+}
 
-    const payload: JwtPayload = jwt.verify(
-      token,
-      process.env.JWT_SECRET!
-    ) as JwtPayload;
-    console.log(payload);
-    if (!payload) throw new NotAuthorizedError('Login required');
-    const currentTime = Math.floor(Date.now() / 1000);
-    console.log(currentTime);
-    if (payload.exp && currentTime > payload.exp)
-      throw new NotAuthorizedError('Login Expired');
-    const user = await UserService.getUser(payload.id!);
-    if (!user) throw new NotAuthorizedError('Forbidden resource');
-    if (!user.tokens.some((t) => t === token))
-      throw new NotAuthorizedError('Forbidden resource');
+export async function isAdmin(req: Request, res: Response, next: NextFunction) {
+  try {
+    const token = req.cookies.Online_Judge;
+    if (!token) throw new NotAuthorizedError('Forbidden resource');
+    const payload = verifyJwt(token, process.env.JWT_SECRET!);
+    isTokenExpired(payload);
+    if (payload.role !== 'ADMIN')
+      throw new NotAuthorizedError("Authorized person's only");
+    validUser(payload, token);
     req.user = payload;
     next();
   } catch (err) {

@@ -1,19 +1,26 @@
 import express from 'express';
 import {
+  addTestCase,
   createProblem,
   deleteProblem,
   getProblem,
   getProblems,
+  replaceTestCase,
   updateProblem,
 } from '../controllers/problem.contorller';
-import { createProblemValidation } from '../middlewares/problemValidation';
+import {
+  createProblemValidation,
+  testCaseValidation,
+} from '../middlewares/problemValidation';
 import { validateRequest } from '../middlewares/validate-request';
 import { body } from 'express-validator';
+import { isAdmin } from '../middlewares/auth';
 
 export const router = express.Router();
 
 router.get('/', getProblems);
 router.get('/:id', getProblem);
+router.use(isAdmin);
 router.post('/', createProblemValidation, validateRequest, createProblem);
 router.patch(
   '/:id',
@@ -23,5 +30,17 @@ router.patch(
   ],
   validateRequest,
   updateProblem
+);
+router.patch(
+  '/replaceTestCases/:id',
+  testCaseValidation,
+  validateRequest,
+  replaceTestCase
+);
+router.patch(
+  '/addTestCases/:id',
+  testCaseValidation,
+  validateRequest,
+  addTestCase
 );
 router.delete('/:id', deleteProblem);

@@ -84,3 +84,38 @@ export async function deleteProblem(
     next(err);
   }
 }
+
+export async function replaceTestCase(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const data = await problemService.replaceTestCase(req.body, req.params.id);
+
+    return res.status(200).json({
+      message: 'Successfully replace test cases',
+      updatedProblem: data,
+    });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+}
+
+export async function addTestCase(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const data = await problemService.addTestCase(req.body, req.params.id);
+    return res.status(200).json({
+      message: 'Test cases added successfully',
+      updatedProblem: data,
+    });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+}
