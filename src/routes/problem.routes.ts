@@ -7,7 +7,7 @@ import {
   getProblems,
   replaceTestCase,
   updateProblem,
-} from '../controllers/problem.contorller';
+} from '../controllers/problem.controller';
 import {
   createProblemValidation,
   testCaseValidation,
