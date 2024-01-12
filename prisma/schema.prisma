@@ -62,6 +62,8 @@ enum JudgeStatus {
   ACCEPTED
   FAILED
   ERROR
+  TIME_LIMIT_EXCEEDED
+  MEMORY_LIMIT_EXCEEDED
 }
 
 enum Role {

@@ -53,8 +53,9 @@ export default class JavaScriptRunner implements Runner {
         if (child.exitCode === null) {
           child.kill();
         }
+        fs.rmSync(submittedFile);
         resolve({ status: 'FAILED', message: 'Time Limit Exceeded' });
-      }, 5000);
+      }, 100);
 
       async function getMemoryUsage() {
         if (child.exitCode !== null) {
@@ -92,6 +93,7 @@ export default class JavaScriptRunner implements Runner {
           const out = fs.readFileSync(
             `D:/Nestjs/Online-judge/Online-judge/src/results/${filename}`
           );
+          fs.rmSync(submittedFile);
           const result = JSON.parse(out.toString());
           resolve(result);
         } catch (err) {
