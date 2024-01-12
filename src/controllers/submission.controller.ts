@@ -34,3 +34,20 @@ export async function getSubmission(
     next(err);
   }
 }
+
+export async function createSubmission(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const submission = await SubmissionService.createSubmission(
+      req.user!.id,
+      req.body
+    );
+    return res.status(200).json(submission);
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+}
