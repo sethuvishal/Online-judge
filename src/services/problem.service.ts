@@ -11,6 +11,10 @@ async function getProblems() {
 async function getProblem(id: string) {
   const problem = await db.problem.findFirst({
     where: { id },
+    include: {
+      Comments: true,
+      Vote: true,
+    },
   });
 
   if (!problem) throw new NotFoundError('No Problem Found');
@@ -44,10 +48,7 @@ async function deleteProblem(id: string) {
   });
 }
 
-async function updateProblem(
-  data: { title?: string; description?: string },
-  id: string
-) {
+async function updateProblem(data: CreateProblem, id: string) {
   const existingProblem = await db.problem.findUnique({ where: { id } });
   if (!existingProblem) throw new NotFoundError('No Problem Found');
   const res = await db.problem.update({
@@ -58,39 +59,10 @@ async function updateProblem(
   return res;
 }
 
-async function replaceTestCase(data: { test_cases: string }, id: string) {
-  const existingProblem = await db.problem.findUnique({ where: { id } });
-  if (!existingProblem) throw new NotFoundError('No Problem Found');
-  const res = await db.problem.update({
-    where: { id },
-    data: {
-      test_cases: data.test_cases,
-    },
-  });
-  return res;
-}
-
-async function addTestCase(data: { test_cases: string }, id: string) {
-  const existingProblem = await db.problem.findUnique({ where: { id } });
-  if (!existingProblem) throw new NotFoundError('No Problem Found');
-
-  const addedTestCases = JSON.parse(existingProblem.test_cases);
-
-  const res = await db.problem.update({
-    where: { id },
-    data: {
-      test_cases: addedTestCases,
-    },
-  });
-  return res;
-}
-
 export default {
   getProblems,
   getProblem,
   createProblem,
   deleteProblem,
   updateProblem,
-  replaceTestCase,
-  addTestCase,
 };

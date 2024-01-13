@@ -54,8 +54,11 @@ export default class JavaScriptRunner implements Runner {
           child.kill();
         }
         fs.rmSync(submittedFile);
-        resolve({ status: 'FAILED', message: 'Time Limit Exceeded' });
-      }, 100);
+        resolve({
+          status: 'TIME_LIMIT_EXCEEDED',
+          timeTaken: problem.timeLimit,
+        });
+      }, problem.timeLimit);
 
       async function getMemoryUsage() {
         if (child.exitCode !== null) {
@@ -81,8 +84,7 @@ export default class JavaScriptRunner implements Runner {
         if (memInMb > problem.memoryLimit) {
           child.kill();
           resolve({
-            status: 'FAILED',
-            message: 'Memory Limit Exceed',
+            status: 'MEMORY_LIMIT_EXCEEDED',
             memoryUsed: memInMb,
           });
         }

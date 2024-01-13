@@ -16,6 +16,8 @@ model User {
   tokens     String[]
   createdAt  DateTime     @default(now())
   submission Submission[]
+  Comments   Comment[]
+  Vote       Vote[]
 }
 
 model Problem {
@@ -32,6 +34,8 @@ model Problem {
   timeLimit        Int          @default(10)
   memoryLimit      Int          @default(10)
   submission       Submission[]
+  Comments         Comment[]
+  Vote             Vote[]
 }
 
 model Submission {
@@ -47,6 +51,31 @@ model Submission {
   failedTestCase String?
   timeTaken      Int?
   memoryUsed     Int?
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  problem   Problem  @relation(fields: [problemId], references: [id])
+  problemId String
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+  text      String
+  createdAt DateTime @default(now())
+}
+
+model Vote {
+  problem   Problem  @relation(fields: [problemId], references: [id])
+  problemId String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  type      VoteType
+
+  @@id([userId, problemId])
+}
+
+enum VoteType {
+  UP
+  DOWN
 }
 
 enum Language {

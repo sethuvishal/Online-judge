@@ -53,14 +53,7 @@ export async function updateProblem(
   next: NextFunction
 ) {
   try {
-    const filteredData = {
-      title: req.body.title,
-      description: req.body.description,
-    };
-    const problem = await problemService.updateProblem(
-      filteredData,
-      req.params.id
-    );
+    const problem = await problemService.updateProblem(req.body, req.params.id);
     return res
       .status(200)
       .json({ message: 'Problem updated successfully', problem });
@@ -79,41 +72,6 @@ export async function deleteProblem(
     return res
       .status(200)
       .json({ message: 'Problem deleted successfully', id: req.params.id });
-  } catch (err) {
-    console.log(err);
-    next(err);
-  }
-}
-
-export async function replaceTestCase(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    const data = await problemService.replaceTestCase(req.body, req.params.id);
-
-    return res.status(200).json({
-      message: 'Successfully replace test cases',
-      updatedProblem: data,
-    });
-  } catch (err) {
-    console.log(err);
-    next(err);
-  }
-}
-
-export async function addTestCase(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    const data = await problemService.addTestCase(req.body, req.params.id);
-    return res.status(200).json({
-      message: 'Test cases added successfully',
-      updatedProblem: data,
-    });
   } catch (err) {
     console.log(err);
     next(err);
