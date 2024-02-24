@@ -29,11 +29,11 @@ export async function isAdmin(req: Request, res: Response, next: NextFunction) {
     isTokenExpired(payload);
     if (payload.role !== 'ADMIN')
       throw new NotAuthorizedError("Authorized person's only");
-    validUser(payload, token);
+    await validUser(payload, token);
     req.user = payload;
     next();
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     next(err);
   }
 }

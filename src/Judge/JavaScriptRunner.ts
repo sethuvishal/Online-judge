@@ -21,10 +21,12 @@ export default class JavaScriptRunner implements Runner {
   }> {
     return new Promise((resolve, reject) => {
       const filename = problem.id + Date.now();
-      const code_snippets = JSON.parse(problem.code_snippets);
+      const code_snippets = problem.codeSnippets;
       const snippet = code_snippets.find(
         (snippet: any) => snippet.lang === 'js'
       );
+      if (!snippet) throw new Error('Something went wrong');
+
       const fileCode = snippet.code.replace(
         '//Replace your code here',
         userCode

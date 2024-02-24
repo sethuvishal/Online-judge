@@ -21,21 +21,28 @@ model User {
 }
 
 model Problem {
-  id               String       @id @default(uuid())
-  no               Int          @default(autoincrement())
-  title            String
+  id               String        @id @default(uuid())
+  no               Int           @default(autoincrement())
+  title            String        @unique()
   description      String
-  input_types      String[]
   test_cases       String
-  code_snippets    String
-  submission_count Int          @default(0)
-  accepted         Int          @default(0)
-  difficulty       Difficulty   @default(EASY)
-  timeLimit        Int          @default(10)
-  memoryLimit      Int          @default(10)
+  codeSnippets     CodeSnippet[]
+  submission_count Int           @default(0)
+  accepted         Int           @default(0)
+  difficulty       Difficulty    @default(EASY)
+  timeLimit        Int           @default(10)
+  memoryLimit      Int           @default(10)
   submission       Submission[]
   Comments         Comment[]
   Vote             Vote[]
+}
+
+model CodeSnippet {
+  id        String  @id @default(uuid())
+  lang      String
+  code      String
+  problem   Problem @relation(fields: [problemId], references: [id])
+  problemId String
 }
 
 model Submission {

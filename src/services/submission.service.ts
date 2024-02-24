@@ -24,6 +24,9 @@ async function getSubmission(id: string) {
 async function createSubmission(userId: string, data: createSubmissionType) {
   const problem = await db.problem.findUnique({
     where: { id: data.problemId },
+    include: {
+      codeSnippets: true,
+    },
   });
   if (!problem) throw new NotFoundError(`No Problem Found`);
 
@@ -34,7 +37,6 @@ async function createSubmission(userId: string, data: createSubmissionType) {
   });
   const runner = new JavaScriptRunner();
   runner.run(problem, submission.code).then(async (data) => {
-    console.log(data);
     await db.submission.update({
       where: { id: submission.id },
       data: {

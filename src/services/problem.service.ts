@@ -1,6 +1,6 @@
 import { NotFoundError } from '../errors/not-found-error';
 import db from '../services/prisma-client';
-import { CreateProblem } from '../types/problem';
+import { CreateProblem, UpdateProblem } from '../types/problem';
 
 async function getProblems() {
   const problems = await db.problem.findMany();
@@ -12,6 +12,7 @@ async function getProblem(id: string) {
   const problem = await db.problem.findFirst({
     where: { id },
     include: {
+      codeSnippets: true,
       Comments: true,
       Vote: true,
     },
@@ -28,8 +29,9 @@ async function createProblem(data: CreateProblem) {
       title: data.title,
       description: data.description,
       test_cases: data.test_cases,
-      input_types: data.input_types,
-      code_snippets: data.code_snippets,
+      codeSnippets: {
+        create: data.codeSnippets,
+      },
     },
   });
 
@@ -48,7 +50,7 @@ async function deleteProblem(id: string) {
   });
 }
 
-async function updateProblem(data: CreateProblem, id: string) {
+async function updateProblem(data: UpdateProblem, id: string) {
   const existingProblem = await db.problem.findUnique({ where: { id } });
   if (!existingProblem) throw new NotFoundError('No Problem Found');
   const res = await db.problem.update({
